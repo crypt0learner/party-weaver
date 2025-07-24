@@ -14,7 +14,95 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      event_invites: {
+        Row: {
+          created_at: string
+          email: string | null
+          event_id: string
+          guest_message: string | null
+          guest_name: string | null
+          id: string
+          invite_token: string
+          phone_number: string | null
+          responded_at: string | null
+          rsvp_status: string
+          sent_at: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          event_id: string
+          guest_message?: string | null
+          guest_name?: string | null
+          id?: string
+          invite_token?: string
+          phone_number?: string | null
+          responded_at?: string | null
+          rsvp_status?: string
+          sent_at?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          event_id?: string
+          guest_message?: string | null
+          guest_name?: string | null
+          id?: string
+          invite_token?: string
+          phone_number?: string | null
+          responded_at?: string | null
+          rsvp_status?: string
+          sent_at?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_invites_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      events: {
+        Row: {
+          cohost_user_ids: string[] | null
+          created_at: string
+          description: string | null
+          host_user_id: string
+          id: string
+          location: string | null
+          start_time: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          cohost_user_ids?: string[] | null
+          created_at?: string
+          description?: string | null
+          host_user_id: string
+          id?: string
+          location?: string | null
+          start_time: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          cohost_user_ids?: string[] | null
+          created_at?: string
+          description?: string | null
+          host_user_id?: string
+          id?: string
+          location?: string | null
+          start_time?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
