@@ -2,41 +2,66 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
+/* Party Weaver Design System - Celebration-themed color palette
+All colors MUST be HSL for consistency and themability.
 */
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Celebration color palette */
+    --background: 328 100% 99%;
+    --foreground: 262 83% 12%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 262 83% 12%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 262 83% 12%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* Primary: Rich purple for celebration */
+    --primary: 262 83% 58%;
+    --primary-foreground: 0 0% 100%;
+    --primary-glow: 262 83% 70%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    /* Secondary: Soft pink for warmth */
+    --secondary: 328 85% 96%;
+    --secondary-foreground: 262 83% 12%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    /* Muted: Subtle celebration tones */
+    --muted: 328 25% 95%;
+    --muted-foreground: 262 20% 50%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    /* Accent: Golden celebration highlight */
+    --accent: 45 93% 85%;
+    --accent-foreground: 262 83% 12%;
+
+    /* Success: Festive green */
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 100%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 328 30% 88%;
+    --input: 328 30% 88%;
+    --ring: 262 83% 58%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
+
+    /* Celebration gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
+    --gradient-celebration: linear-gradient(135deg, hsl(262 83% 58%), hsl(328 85% 70%), hsl(45 93% 70%));
+    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%), hsl(328 25% 98%));
+    --gradient-hero: linear-gradient(135deg, hsl(328 100% 99%), hsl(262 30% 95%));
+
+    /* Celebration shadows */
+    --shadow-celebration: 0 10px 40px -15px hsl(var(--primary) / 0.3);
+    --shadow-card: 0 4px 20px -8px hsl(var(--primary) / 0.1);
+    --shadow-glow: 0 0 30px hsl(var(--primary-glow) / 0.4);
+
+    /* Smooth transitions */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 
     --sidebar-background: 0 0% 98%;
 
