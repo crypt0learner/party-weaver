@@ -1,3 +1,5 @@
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/components/auth/AuthProvider";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -5,6 +7,24 @@ import { Calendar, Users, Mail, Sparkles, PartyPopper, Gift, Clock, MapPin } fro
 import heroImage from "@/assets/hero-celebration.jpg";
 
 const Index = () => {
+  const navigate = useNavigate();
+  const { user } = useAuth();
+
+  const handleGetStarted = () => {
+    if (user) {
+      navigate('/dashboard');
+    } else {
+      navigate('/auth');
+    }
+  };
+
+  const handleSignIn = () => {
+    if (user) {
+      navigate('/dashboard');
+    } else {
+      navigate('/auth');
+    }
+  };
   return (
     <div className="min-h-screen bg-gradient-hero">
       {/* Header */}
@@ -15,8 +35,12 @@ const Index = () => {
             <h1 className="text-2xl font-bold text-foreground">Party Weaver</h1>
           </div>
           <div className="flex items-center gap-3">
-            <Button variant="ghost">Sign In</Button>
-            <Button variant="celebration" size="lg">Get Started</Button>
+            <Button variant="ghost" onClick={handleSignIn}>
+              {user ? 'Dashboard' : 'Sign In'}
+            </Button>
+            <Button variant="celebration" size="lg" onClick={handleGetStarted}>
+              {user ? 'Create Event' : 'Get Started'}
+            </Button>
           </div>
         </nav>
       </header>
@@ -41,13 +65,13 @@ const Index = () => {
             </div>
             
             <div className="flex flex-col sm:flex-row gap-4">
-              <Button variant="celebration" size="xl" className="flex-1">
+              <Button variant="celebration" size="xl" className="flex-1" onClick={handleGetStarted}>
                 <PartyPopper className="h-5 w-5 mr-2" />
-                Create Your First Event
+                {user ? 'Create Your First Event' : 'Get Started Now'}
               </Button>
-              <Button variant="outline" size="xl" className="flex-1">
+              <Button variant="outline" size="xl" className="flex-1" onClick={handleSignIn}>
                 <Calendar className="h-5 w-5 mr-2" />
-                See How It Works
+                {user ? 'View Dashboard' : 'See How It Works'}
               </Button>
             </div>
 
@@ -175,12 +199,12 @@ const Index = () => {
               </p>
             </div>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button variant="secondary" size="xl" className="bg-white text-primary hover:bg-white/90">
+              <Button variant="secondary" size="xl" className="bg-white text-primary hover:bg-white/90" onClick={handleGetStarted}>
                 <PartyPopper className="h-5 w-5 mr-2" />
-                Start Planning Now
+                {user ? 'Create Event Now' : 'Start Planning Now'}
               </Button>
-              <Button variant="outline" size="xl" className="border-white text-white hover:bg-white/10">
-                View Templates
+              <Button variant="outline" size="xl" className="border-white text-white hover:bg-white/10" onClick={handleSignIn}>
+                {user ? 'View Dashboard' : 'View Templates'}
               </Button>
             </div>
           </CardContent>
