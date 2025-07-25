@@ -6,7 +6,8 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Label } from '@/components/ui/label';
-import { ArrowLeft, Calendar, MapPin, Users, Plus, Edit, Send, UserPlus, X, Mail } from 'lucide-react';
+import { InviteGuestForm } from '@/components/InviteGuestForm';
+import { ArrowLeft, Calendar, MapPin, Users, Plus, Edit, Send, UserPlus, X, Mail, Phone } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
 
@@ -26,11 +27,22 @@ interface Profile {
   email: string;
 }
 
+interface Invite {
+  id: string;
+  guest_name: string;
+  email: string | null;
+  phone_number: string | null;
+  rsvp_status: string;
+  responded_at: string | null;
+  sent_at: string;
+}
+
 const EventDetail = () => {
   const { id } = useParams();
   const { user, loading: authLoading } = useAuth();
   const [event, setEvent] = useState<Event | null>(null);
   const [cohosts, setCohosts] = useState<Profile[]>([]);
+  const [invites, setInvites] = useState<Invite[]>([]);
   const [loading, setLoading] = useState(true);
   const [addingCohost, setAddingCohost] = useState(false);
   const [cohostEmail, setCohostEmail] = useState('');
@@ -47,6 +59,7 @@ const EventDetail = () => {
   useEffect(() => {
     if (id && user) {
       loadEvent();
+      loadInvites();
     }
   }, [id, user]);
 
@@ -100,6 +113,27 @@ const EventDetail = () => {
       navigate('/dashboard');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const loadInvites = async () => {
+    if (!id) return;
+
+    try {
+      const { data, error } = await supabase
+        .from('event_invites')
+        .select('id, guest_name, email, phone_number, rsvp_status, responded_at, sent_at')
+        .eq('event_id', id)
+        .order('sent_at', { ascending: false });
+
+      if (error) {
+        console.error('Error loading invites:', error);
+        return;
+      }
+
+      setInvites(data || []);
+    } catch (error) {
+      console.error('Error loading invites:', error);
     }
   };
 
@@ -188,6 +222,24 @@ const EventDetail = () => {
         title: "Error",
         description: "Failed to remove co-host. Please try again.",
       });
+    }
+  };
+
+  const getStatusBadgeVariant = (status: string) => {
+    switch (status) {
+      case 'attending': return 'default';
+      case 'not_attending': return 'destructive';  
+      case 'maybe': return 'secondary';
+      default: return 'outline';
+    }
+  };
+
+  const getStatusText = (status: string) => {
+    switch (status) {
+      case 'attending': return 'Attending';
+      case 'not_attending': return 'Not Attending';
+      case 'maybe': return 'Maybe';
+      default: return 'Pending';
     }
   };
 
@@ -300,6 +352,51 @@ const EventDetail = () => {
               </div>
             </CardContent>
           </Card>
+
+          {/* Guest Invitations */}
+          {(isEventHost() || event?.cohost_user_ids?.includes(user?.id || '')) && (
+            <div className="grid gap-6 md:grid-cols-2">
+              <InviteGuestForm eventId={event.id} onInviteSent={loadInvites} />
+              
+              <Card>
+                <CardHeader>
+                  <CardTitle>Guest List ({invites.length})</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {invites.length > 0 ? (
+                    <div className="space-y-3 max-h-96 overflow-y-auto">
+                      {invites.map((invite) => (
+                        <div key={invite.id} className="flex items-center justify-between p-3 bg-muted rounded-lg">
+                          <div className="flex-1">
+                            <p className="font-medium">{invite.guest_name}</p>
+                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                              {invite.email && (
+                                <div className="flex items-center gap-1">
+                                  <Mail className="h-3 w-3" />
+                                  <span>{invite.email}</span>
+                                </div>
+                              )}
+                              {invite.phone_number && (
+                                <div className="flex items-center gap-1">
+                                  <Phone className="h-3 w-3" />
+                                  <span>{invite.phone_number}</span>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                          <Badge variant={getStatusBadgeVariant(invite.rsvp_status)}>
+                            {getStatusText(invite.rsvp_status)}
+                          </Badge>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-muted-foreground text-sm">No guests invited yet</p>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+          )}
 
           {/* Co-hosts Management */}
           <Card className="bg-gradient-card border-0 shadow-card-elevated">
